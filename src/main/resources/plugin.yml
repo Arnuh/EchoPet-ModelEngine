@@ -1,0 +1,5 @@
+name: EchoPet-ModelEngine
+version: ${project.version}-bjenkins-build-number
+main: ca.arnah.echopet.modelengine.EchoPetModelEngine
+depend: [EchoPet, ModelEngine]
+api-version: 1.13
