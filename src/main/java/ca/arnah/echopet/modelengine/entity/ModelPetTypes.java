@@ -26,12 +26,17 @@ public class ModelPetTypes implements IPetType{
 	private final EchoPetModelEngine plugin;
 	private final String name, configName;
 	private final String defaultName;
+	private final List<PetDataCategory> allowedCategories;
+	private final List<PetData> allowedDataTypes;
 	
 	public ModelPetTypes(EchoPetModelEngine plugin, String name){
 		this.plugin = plugin;
 		this.name = name;
 		this.defaultName = name();
 		this.configName = name().toLowerCase().replace("_", "");
+		this.allowedCategories = new ArrayList<>();
+		this.allowedDataTypes = new ArrayList<>();
+		allowedDataTypes.add(PetData.HAT);
 	}
 	
 	@Override
@@ -61,12 +66,12 @@ public class ModelPetTypes implements IPetType{
 	
 	@Override
 	public List<PetDataCategory> getAllowedCategories(){
-		return List.of();
+		return allowedCategories;
 	}
 	
 	@Override
 	public List<PetData> getAllowedDataTypes(){
-		return List.of(PetData.HAT, PetData.RIDE);
+		return allowedDataTypes;
 	}
 	
 	@Override

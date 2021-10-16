@@ -8,6 +8,7 @@ import ca.arnah.echopet.modelengine.provider.ModelEngineProvider;
 import com.dsh105.commodus.config.YAMLConfig;
 import com.dsh105.commodus.config.YAMLConfigManager;
 import com.dsh105.echopet.compat.api.entity.IPet;
+import com.dsh105.echopet.compat.api.entity.PetData;
 import com.dsh105.echopet.compat.api.entity.PetType;
 import com.dsh105.echopet.compat.api.event.PetSpawnEvent;
 import com.dsh105.echopet.compat.api.util.Logger;
@@ -98,6 +99,14 @@ public class EchoPetModelEngine extends JavaPlugin implements Listener{
 		entity.setWalking(true);
 		entity.setInvisible(true);
 		modelPet.setModeledEntity(entity);
+		// Since we don't know what models can be mounted until the async load is done
+		// We check once we know the model exists.
+		if(pet.getPetType() instanceof ModelPetTypes petType){
+			// Is mount entity the best way to check for mounting? canRide in IMountHandler doesn't work as i'd expect.
+			if(model.getMountEntity() != null && !petType.getAllowedDataTypes().contains(PetData.RIDE)){
+				petType.getAllowedDataTypes().add(PetData.RIDE);
+			}
+		}
 	}
 	
 	public static EchoPetModelEngine getPlugin(){

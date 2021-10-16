@@ -48,8 +48,11 @@ public class ConfigOptions extends Options{
 		set("pets." + defaultPet + ".allow.riders", true);
 		
 		for(PetData pd : PetData.values){
-			if(petType.isValidData(pd)){
-				set("pets." + defaultPet + ".allow." + pd.getConfigKeyName(), true);
+			// We don't know what models can be mounted at this time.
+			// Show the config option exists as to prevent confusion.
+			boolean skip = pd.equals(PetData.RIDE);
+			if(petType.isValidData(pd) || skip){
+				set("pets." + defaultPet + ".allow." + pd.getConfigKeyName(), !skip);
 				set("pets." + defaultPet + ".force." + pd.getConfigKeyName(), false);
 			}
 		}
