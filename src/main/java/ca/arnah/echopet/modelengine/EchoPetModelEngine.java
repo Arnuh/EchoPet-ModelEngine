@@ -95,7 +95,6 @@ public class EchoPetModelEngine extends JavaPlugin implements Listener{
 		entity.detectPlayers();
 		entity.setWalking(true);
 		entity.setInvisible(true);
-		entity.setRideable(true);
 		modelPet.setModeledEntity(entity);
 	}
 	
