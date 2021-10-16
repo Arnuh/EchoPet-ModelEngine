@@ -24,6 +24,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  **/
 public class EchoPetModelEngine extends JavaPlugin implements Listener{
 	
+	private static EchoPetModelEngine plugin;
 	private EchoPetProvider echoPetProvider;
 	private ModelEngineProvider modelEngineProvider;
 	private YAMLConfigManager configManager;
@@ -32,6 +33,7 @@ public class EchoPetModelEngine extends JavaPlugin implements Listener{
 	
 	@Override
 	public void onEnable(){
+		plugin = this;
 		configManager = new YAMLConfigManager(this);
 		loadConfiguration();
 		echoPetProvider = new EchoPetProvider(this);
@@ -67,7 +69,7 @@ public class EchoPetModelEngine extends JavaPlugin implements Listener{
 		}catch(Exception e){
 			Logger.log(Logger.LogLevel.WARNING, "Configuration File [config.yml] generation failed.", e, true);
 		}
-		options = new ConfigOptions(this, config);
+		options = new ConfigOptions(config);
 		config.reloadConfig();
 	}
 	
@@ -96,6 +98,10 @@ public class EchoPetModelEngine extends JavaPlugin implements Listener{
 		entity.setWalking(true);
 		entity.setInvisible(true);
 		modelPet.setModeledEntity(entity);
+	}
+	
+	public static EchoPetModelEngine getPlugin(){
+		return plugin;
 	}
 	
 	public EchoPetProvider getEchoPetProvider(){

@@ -12,11 +12,8 @@ import com.dsh105.echopet.compat.api.entity.PetData;
  **/
 public class ConfigOptions extends Options{
 	
-	private final EchoPetModelEngine plugin;
-	
-	public ConfigOptions(EchoPetModelEngine plugin, YAMLConfig config){
+	public ConfigOptions(YAMLConfig config){
 		super(config);
-		this.plugin = plugin;
 	}
 	
 	public Set<String> getPets(){
@@ -29,7 +26,7 @@ public class ConfigOptions extends Options{
 		if(config.getConfigurationSection("pets") != null){
 			return;
 		}
-		ModelPetTypes petType = new ModelPetTypes(plugin, "kindletronsr");
+		ModelPetTypes petType = new ModelPetTypes(EchoPetModelEngine.getPlugin(), "kindletronsr");
 		String defaultPet = "kindletronsr";
 		set("pets." + defaultPet + ".enable", true);
 		set("pets." + defaultPet + ".tagVisible", true);
@@ -51,7 +48,7 @@ public class ConfigOptions extends Options{
 		set("pets." + defaultPet + ".allow.riders", true);
 		
 		for(PetData pd : PetData.values){
-			if(petType.isDataAllowed(pd)){
+			if(petType.isValidData(pd)){
 				set("pets." + defaultPet + ".allow." + pd.getConfigKeyName(), true);
 				set("pets." + defaultPet + ".force." + pd.getConfigKeyName(), false);
 			}
