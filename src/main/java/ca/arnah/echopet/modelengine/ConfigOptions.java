@@ -2,8 +2,8 @@ package ca.arnah.echopet.modelengine;
 
 import java.util.Set;
 import ca.arnah.echopet.modelengine.entity.ModelPetTypes;
-import com.dsh105.commodus.config.Options;
-import com.dsh105.commodus.config.YAMLConfig;
+import com.dsh105.echopet.compat.api.config.Options;
+import com.dsh105.echopet.compat.api.config.YAMLConfig;
 import com.dsh105.echopet.compat.api.entity.PetData;
 
 /**
