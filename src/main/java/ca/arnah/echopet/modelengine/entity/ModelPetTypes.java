@@ -13,6 +13,7 @@ import com.dsh105.echopet.compat.api.entity.PetType;
 import com.dsh105.echopet.compat.api.plugin.EchoPet;
 import com.dsh105.echopet.compat.api.util.Version;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 /**
@@ -27,7 +28,7 @@ public class ModelPetTypes implements IPetType{
 	private final String name, configName;
 	private final String defaultName;
 	private final List<PetDataCategory> allowedCategories;
-	private final List<PetData> allowedDataTypes;
+	private final List<PetData<?>> allowedDataTypes;
 	
 	public ModelPetTypes(EchoPetModelEngine plugin, String name){
 		this.plugin = plugin;
@@ -70,7 +71,7 @@ public class ModelPetTypes implements IPetType{
 	}
 	
 	@Override
-	public List<PetData> getAllowedDataTypes(){
+	public List<PetData<?>> getAllowedDataTypes(){
 		return allowedDataTypes;
 	}
 	
@@ -118,86 +119,111 @@ public class ModelPetTypes implements IPetType{
 	}
 	
 	@Override
+	public YAMLConfig getConfig(){
+		return plugin.getMainConfig();
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getConfigValue(String variable, T defaultValue){
+		return (T) getConfig().get("pets." + getConfigKeyName() + "." + variable, defaultValue);
+	}
+	
+	@Override
+	public ConfigurationSection getPetDataSection(PetData<?> data){
+		return getConfig().getConfigurationSection("pets." + getConfigKeyName() + ".data." + data.getConfigKeyName());
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getPetDataProperty(PetData<?> data, String variable, T defaultValue){
+		ConfigurationSection section = getPetDataSection(data);
+		if(section == null) return defaultValue;
+		return (T) section.get("." + variable, defaultValue);
+	}
+	
+	@Override
 	public boolean isEnabled(){
-		return getConfig().getBoolean("pets." + getConfigKeyName() + ".enable", true);
+		return getConfigValue("enable", true);
 	}
 	
 	@Override
 	public boolean isTagVisible(){
-		return getConfig().getBoolean("pets." + getConfigKeyName() + ".tagVisible", true);
+		return getConfigValue("tagVisible", true);
 	}
 	
 	@Override
 	public boolean isInteractMenuEnabled(){
-		return getConfig().getBoolean("pets." + getConfigKeyName() + ".interactMenu", true);
+		return getConfigValue("interactMenu", true);
 	}
 	
 	@Override
 	public boolean allowRidersFor(){
-		return getConfig().getBoolean("pets." + getConfigKeyName() + ".allow.riders", true);
-	}
-	
-	@Override
-	public boolean isDataAllowed(PetData data){
-		return getConfig().getBoolean("pets." + getConfigKeyName() + ".allow." + data.getConfigKeyName(), true);
-	}
-	
-	@Override
-	public boolean isDataForced(PetData data){
-		return getConfig().getBoolean("pets." + getConfigKeyName() + ".force." + data.getConfigKeyName(), false);
+		return getConfigValue("riders", true);
 	}
 	
 	@Override
 	public boolean canFly(){
-		return getConfig().getBoolean("pets." + getConfigKeyName() + ".canFly", false);
+		return getConfigValue("canFly", false);
 	}
 	
 	@Override
 	public boolean canIgnoreFallDamage(){
-		return getConfig().getBoolean("pets." + getConfigKeyName() + ".ignoreFallDamage", true);
+		return getConfigValue("ignoreFallDamage", true);
 	}
 	
 	@Override
 	public double getWalkSpeed(){
-		return getConfig().getDouble("pets." + getConfigKeyName() + ".walkSpeed", 0.37D);
+		return getConfigValue("walkSpeed", 0.37D);
 	}
 	
 	@Override
 	public float getRideSpeed(){
-		return (float) getConfig().getDouble("pets." + getConfigKeyName() + ".rideSpeed", 0.2D);
+		return getConfigValue("rideSpeed", 0.2D).floatValue();
 	}
 	
 	@Override
 	public float getFlySpeed(){
-		return (float) getConfig().getDouble("pets." + getConfigKeyName() + ".flySpeed", 0.5D);
+		return getConfigValue("flySpeed", 0.5D).floatValue();
 	}
 	
 	@Override
 	public double getRideJumpHeight(){
-		return getConfig().getDouble("pets." + getConfigKeyName() + ".rideJump", 0.6D);
+		return getConfigValue("rideJump", 0.6D);
 	}
 	
 	@Override
 	public double getStartFollowDistance(){
-		return getConfig().getDouble("pets." + getConfigKeyName() + ".startFollowDistance", 6);
+		return getConfigValue("startFollowDistance", 6);
 	}
 	
 	@Override
 	public double getStopFollowDistance(){
-		return getConfig().getDouble("pets." + getConfigKeyName() + ".stopFollowDistance", 2);
+		return getConfigValue("stopFollowDistance", 2);
 	}
 	
 	@Override
 	public double getTeleportDistance(){
-		return getConfig().getDouble("pets." + getConfigKeyName() + ".teleportDistance", 10);
+		return getConfigValue("teleportDistance", 10);
 	}
 	
 	@Override
 	public double getFollowSpeedModifier(){
-		return getConfig().getDouble("pets." + getConfigKeyName() + ".followSpeedModifier", 1);
+		return getConfigValue("followSpeedModifier", 1);
 	}
 	
-	private YAMLConfig getConfig(){
-		return plugin.getMainConfig();
+	@Override
+	public boolean isDataAllowed(PetData<?> data){
+		return getPetDataProperty(data, "allow", true);
+	}
+	
+	@Override
+	public boolean isDataForced(PetData<?> data){
+		return getPetDataProperty(data, "force", false);
+	}
+	
+	@Override
+	public <T> T getDataDefaultValue(PetData<?> data, T defaultValue){
+		return getPetDataProperty(data, "default", defaultValue);
 	}
 }

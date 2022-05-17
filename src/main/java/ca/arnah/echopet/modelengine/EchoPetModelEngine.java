@@ -1,5 +1,6 @@
 package ca.arnah.echopet.modelengine;
 
+import java.util.logging.Level;
 import ca.arnah.echopet.modelengine.entity.ModelEnginePet;
 import ca.arnah.echopet.modelengine.entity.ModelEnginePetRegistrationEntry;
 import ca.arnah.echopet.modelengine.entity.ModelPetTypes;
@@ -11,7 +12,6 @@ import com.dsh105.echopet.compat.api.entity.IPet;
 import com.dsh105.echopet.compat.api.entity.PetData;
 import com.dsh105.echopet.compat.api.entity.PetType;
 import com.dsh105.echopet.compat.api.event.PetSpawnEvent;
-import com.dsh105.echopet.compat.api.util.Logger;
 import com.ticxo.modelengine.api.manager.ModelManager;
 import com.ticxo.modelengine.api.model.ActiveModel;
 import com.ticxo.modelengine.api.model.ModeledEntity;
@@ -55,7 +55,7 @@ public class EchoPetModelEngine extends JavaPlugin implements Listener{
 			var registry = getEchoPetProvider().getDependency().getPetRegistry();
 			registry.register(type, new ModelEnginePetRegistrationEntry(type.name(), type.getPetClass(), type.getEntityClass(), type));
 		}
-		Logger.log(Logger.LogLevel.NORMAL, "Loaded %d Model Pets".formatted(ModelPetTypes.pets.size()), true);
+		getLogger().info("Loaded %d Model Pets".formatted(ModelPetTypes.pets.size()));
 		PetType.pets.addAll(ModelPetTypes.pets);
 	}
 	
@@ -68,7 +68,7 @@ public class EchoPetModelEngine extends JavaPlugin implements Listener{
 		try{
 			config = configManager.getNewConfig("config.yml");
 		}catch(Exception e){
-			Logger.log(Logger.LogLevel.WARNING, "Configuration File [config.yml] generation failed.", e, true);
+			getLogger().log(Level.SEVERE, "Configuration File [config.yml] generation failed.", e);
 		}
 		options = new ConfigOptions(config);
 		config.reloadConfig();
@@ -83,6 +83,7 @@ public class EchoPetModelEngine extends JavaPlugin implements Listener{
 		if(!(pet instanceof ModelEnginePet modelPet)){
 			return;
 		}
+		// Could handle this by overriding spawnPet and just checking return value of a super call
 		
 		ModelManager manager = modelEngineProvider.getDependency().getModelManager();
 		
